@@ -130,6 +130,11 @@ QDRANT_URL = os.getenv('QDRANT_URL', 'http://localhost:6333')
 OLLAMA_URL = os.getenv('OLLAMA_URL', 'http://localhost:11434')
 OLLAMA_MODEL = os.getenv('OLLAMA_MODEL', 'gpt-oss:latest')
 
+# LLM Provider Configuration
+LLM_PROVIDER = os.getenv('LLM_PROVIDER', 'ollama')  # 'ollama' or 'gemini'
+GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
+GEMINI_MODEL = os.getenv('GEMINI_MODEL', 'gemini-pro')
+
 # Security Settings
 SQL_QUERY_TIMEOUT = int(os.getenv('SQL_QUERY_TIMEOUT', '30'))
 MAX_RESULT_ROWS = int(os.getenv('MAX_RESULT_ROWS', '1000'))

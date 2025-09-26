@@ -9,7 +9,7 @@ from .models import ChatSession, ChatMessage
 from .serializers import ChatRequestSerializer, ChatSessionSerializer, ChatMessageSerializer
 from apps.embeddings.services import EmbeddingService
 from apps.database.services import DatabaseService
-from utils.ollama_client import OllamaClient
+from utils.llm_client import LLMClient
 
 logger = logging.getLogger(__name__)
 
@@ -113,16 +113,16 @@ def _handle_database_query(message: str) -> tuple:
         embedding_service = EmbeddingService()
         relevant_schemas = embedding_service.search_similar_schemas(message)
 
-        # Generate SQL query using Ollama
-        ollama_client = OllamaClient()
-        sql_query = ollama_client.generate_sql(message, relevant_schemas)
+        # Generate SQL query using LLM
+        llm_client = LLMClient()
+        sql_query = llm_client.generate_sql(message, relevant_schemas)
 
         # Execute SQL query
         db_service = DatabaseService()
         result = db_service.execute_safe_query(sql_query)
 
         # Generate natural language response
-        response = ollama_client.generate_response(message, sql_query, result)
+        response = llm_client.generate_response(message, sql_query, result)
 
         return response, sql_query, result
 
@@ -136,8 +136,8 @@ def _handle_general_query(message: str) -> str:
     Handle non-database queries with brief responses
     """
     try:
-        ollama_client = OllamaClient()
-        response = ollama_client.generate_brief_response(message)
+        llm_client = LLMClient()
+        response = llm_client.generate_brief_response(message)
         return response
     except Exception as e:
         logger.error(f"Error handling general query: {str(e)}")
