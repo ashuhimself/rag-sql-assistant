@@ -185,7 +185,8 @@ const BusinessMetricsDashboard: React.FC = () => {
   return (
     <DashboardContainer>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-        <DashboardTitle>📊 Metrics Dashboard</DashboardTitle>
+        <DashboardTitle>📊 
+          Metrics Dashboard</DashboardTitle>
         <RefreshButton onClick={fetchMetrics} disabled={loading}>
           🔄 Refresh
         </RefreshButton>

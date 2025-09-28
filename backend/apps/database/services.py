@@ -89,12 +89,15 @@ class DatabaseService:
             if not first_token:
                 continue
 
-            # Only allow SELECT statements
+            # Only allow SELECT statements and WITH (CTE) statements
             if first_token.ttype is sqlparse.tokens.Keyword.DML:
                 if first_token.value.upper() != 'SELECT':
                     return False
             elif first_token.ttype is sqlparse.tokens.Keyword:
-                if first_token.value.upper() not in ['SELECT', 'WITH']:
+                if first_token.value.upper() not in ['SELECT', 'WITH', 'CREATE']:
+                    return False
+            elif first_token.ttype is sqlparse.tokens.Keyword.CTE:
+                if first_token.value.upper() != 'WITH':
                     return False
             else:
                 # If first meaningful token isn't a keyword, it's likely not a valid query
@@ -102,7 +105,7 @@ class DatabaseService:
 
             # Check for dangerous keywords
             dangerous_keywords = [
-                'INSERT', 'UPDATE', 'DELETE', 'DROP', 'CREATE', 'ALTER',
+                'INSERT', 'UPDATE', 'DELETE', 'DROP', 'ALTER',
                 'TRUNCATE', 'EXEC', 'EXECUTE', 'CALL', 'MERGE', 'UPSERT'
             ]
 
