@@ -5,6 +5,8 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { tomorrow } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { ChatMessage } from '../types';
 import QueryResult from './QueryResult';
+import DataVisualization from './analytics/DataVisualization';
+import InsightsPanel from './analytics/InsightsPanel';
 
 const Container = styled.div<{ messageType: string }>`
   display: flex;
@@ -99,6 +101,7 @@ interface MessageBubbleProps {
 const MessageBubble: React.FC<MessageBubbleProps> = ({ message }) => {
   const [showSql, setShowSql] = useState(false);
   const [showResult, setShowResult] = useState(false);
+  const [showAnalytics, setShowAnalytics] = useState(false);
 
   const formatTimestamp = (timestamp: string) => {
     return new Date(timestamp).toLocaleTimeString();
@@ -146,6 +149,43 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({ message }) => {
             </SqlHeader>
             {showResult && (
               <QueryResult result={message.sql_result} />
+            )}
+          </SqlSection>
+        )}
+
+        {message.sql_result && message.sql_result.analysis && (
+          <SqlSection>
+            <SqlHeader>
+              <SqlLabel>📊 Analytics & Insights</SqlLabel>
+              <ToggleButton onClick={() => setShowAnalytics(!showAnalytics)}>
+                {showAnalytics ? 'Hide' : 'Show'} Analytics
+              </ToggleButton>
+            </SqlHeader>
+            {showAnalytics && (
+              <div>
+                {/* Insights Panel */}
+                <InsightsPanel
+                  insights={message.sql_result.analysis.insights || []}
+                  recommendations={message.sql_result.analysis.recommendations || []}
+                  statisticalSummary={message.sql_result.analysis.statistical}
+                  metadata={message.sql_result.analysis.metadata}
+                />
+
+                {/* Visualizations */}
+                {message.sql_result.analysis.visualizations &&
+                 message.sql_result.analysis.visualizations.length > 0 && (
+                  <div>
+                    {message.sql_result.analysis.visualizations.slice(0, 3).map((vizConfig: any, index: number) => (
+                      <DataVisualization
+                        key={index}
+                        config={vizConfig}
+                        data={message.sql_result.data || []}
+                        columns={message.sql_result.columns || []}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
             )}
           </SqlSection>
         )}

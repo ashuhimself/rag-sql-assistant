@@ -7,6 +7,7 @@ import LoadingIndicator from './LoadingIndicator';
 import ErrorMessage from './ErrorMessage';
 import DatabaseInfo from './DatabaseInfo';
 import SqlExecutor from './SqlExecutor';
+import BusinessMetricsDashboard from './analytics/BusinessMetricsDashboard';
 
 const Container = styled.div`
   display: flex;
@@ -124,10 +125,9 @@ const Tab = styled.button<{ active: boolean }>`
 `;
 
 const ChatInterface: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'chat' | 'sql'>('chat');
+  const [activeTab, setActiveTab] = useState<'chat' | 'sql' | 'analytics'>('chat');
 
   const {
-    currentSession,
     messages,
     isLoading,
     error,
@@ -180,6 +180,9 @@ const ChatInterface: React.FC = () => {
           <Tab active={activeTab === 'sql'} onClick={() => setActiveTab('sql')}>
             ⚡ SQL Executor
           </Tab>
+          <Tab active={activeTab === 'analytics'} onClick={() => setActiveTab('analytics')}>
+            📊 Analytics Dashboard
+          </Tab>
         </TabList>
       </TabContainer>
 
@@ -211,8 +214,12 @@ const ChatInterface: React.FC = () => {
                 />
               </InputContainer>
             </ChatArea>
-          ) : (
+          ) : activeTab === 'sql' ? (
             <SqlExecutor />
+          ) : (
+            <div style={{ overflow: 'auto', padding: '1rem' }}>
+              <BusinessMetricsDashboard />
+            </div>
           )}
         </ChatContainer>
       </MainContent>

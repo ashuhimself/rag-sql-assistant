@@ -24,6 +24,7 @@ INSTALLED_APPS = [
     'apps.chat',
     'apps.embeddings',
     'apps.database',
+    'apps.analytics',
 ]
 
 MIDDLEWARE = [
